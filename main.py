@@ -4,43 +4,27 @@
 import os.path
 from time import sleep
 
-# Sample Board:
 # 0 = Blank
 # 1 = Player One Bead (White)
 # 2 = Player Two Bead (Black)
-# #         A    B    C    D    E    F    G    H    I    J    K    L    M    N    P
-# board = [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",  # 1
-#          " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",  # 2
-#          " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",  # 3
-#          " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",  # 4
-#          " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",  # 5
-#          " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",  # 6
-#          " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",  # 7
-#          " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",  # 8
-#          " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",  # 9
-#          " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",  # 10
-#          " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",  # 11
-#          " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",  # 12
-#          " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",  # 13
-#          " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",  # 14
-#          " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "]  # 15
-
-#             A    B    C    D    E    F    G    H    I    J    K    L    M    N    P
-cur_board = [[" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],  # 1
-             [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],  # 2
-             [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],  # 3
-             [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],  # 4
-             [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],  # 5
-             [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],  # 6
-             [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],  # 7
-             [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],  # 8
-             [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],  # 9
-             [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],  # 10
-             [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],  # 11
-             [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],  # 12
-             [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],  # 13
-             [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],  # 14
-             [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "]]  # 15
+#             A  B  C  D  E  F  G  H  I  J  K  L  M  N  O
+cur_board = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 1
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 2
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 3
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 4
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 5
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 6
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 7
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 8
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 9
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 10
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 11
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 12
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 13
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 14
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]  # 15
+X = 0  # 0th element of x-y array
+Y = 1  # 1st element of x-y array
 
 
 # Class for Game Node, holds a board state
@@ -185,116 +169,194 @@ class MiniMax:
         return min_value
 
 
-# Maps a column letter to an int
-def parse_column(column):
-    if column == "A":
-        return 0
-    elif column == "B":
-        return 1
-    elif column == "C":
-        return 2
-    elif column == "D":
-        return 3
-    elif column == "E":
-        return 4
-    elif column == "F":
-        return 5
-    elif column == "G":
-        return 6
-    elif column == "H":
-        return 7
-    elif column == "I":
-        return 8
-    elif column == "J":
-        return 9
-    elif column == "K":
-        return 10
-    elif column == "L":
-        return 11
-    elif column == "M":
-        return 12
-    elif column == "N":
-        return 13
-    elif column == "O":
-        return 14
-    elif column == 0:
-        return "A"
-    elif column == 1:
-        return "B"
-    elif column == 2:
-        return "C"
-    elif column == 3:
-        return "D"
-    elif column == 4:
-        return "E"
-    elif column == 5:
-        return "F"
-    elif column == 6:
-        return "G"
-    elif column == 7:
-        return "H"
-    elif column == 8:
-        return "I"
-    elif column == 9:
-        return "J"
-    elif column == 10:
-        return "K"
-    elif column == 11:
-        return "L"
-    elif column == 12:
-        return "M"
-    elif column == 13:
-        return "N"
-    elif column == 14:
-        return "O"
-    else:  # Unknown input
-        return "error"
+# Class for File I/O, also calculates first move
+class FileIO:
+    def __init__(self):
+        self.is_end = False  # Not end of game by default
+        self.our_turn = False  # Not our turn by default
 
+    def parse_column(self, column):
+        """
+        Maps column letter to number, column number to letter
+        :param column: the column letter or number to map
+        :return: the corresponding number or letter
+        """
+        if column == "A":
+            return 0
+        elif column == "B":
+            return 1
+        elif column == "C":
+            return 2
+        elif column == "D":
+            return 3
+        elif column == "E":
+            return 4
+        elif column == "F":
+            return 5
+        elif column == "G":
+            return 6
+        elif column == "H":
+            return 7
+        elif column == "I":
+            return 8
+        elif column == "J":
+            return 9
+        elif column == "K":
+            return 10
+        elif column == "L":
+            return 11
+        elif column == "M":
+            return 12
+        elif column == "N":
+            return 13
+        elif column == "O":
+            return 14
+        elif column == 0:
+            return "A"
+        elif column == 1:
+            return "B"
+        elif column == 2:
+            return "C"
+        elif column == 3:
+            return "D"
+        elif column == 4:
+            return "E"
+        elif column == 5:
+            return "F"
+        elif column == 6:
+            return "G"
+        elif column == 7:
+            return "H"
+        elif column == 8:
+            return "I"
+        elif column == 9:
+            return "J"
+        elif column == 10:
+            return "K"
+        elif column == 11:
+            return "L"
+        elif column == 12:
+            return "M"
+        elif column == 13:
+            return "N"
+        elif column == 14:
+            return "O"
+        else:  # Unknown input
+            return "error"
 
-# Check files and parse move_file
-def check_files():
-    is_end = (os.path.isfile("end_game") or os.path.isfile("end_game.txt"))  # Check for turn
-    our_turn = (os.path.isfile("gomokuguy.go") or os.path.isfile("gomokuguy.go.txt"))  # Check for turn
+    def check_files(self):
+        """
+        Reads move_file if our turn, checks for end of game
+        :return: -1 = Not our turn nor end of game, 0 = our turn and not end of game, 1 = end of game
+        """
+        is_end = (os.path.isfile("end_game") or os.path.isfile("end_game.txt"))  # Check for turn
+        our_turn = (os.path.isfile("gomokuguy.go") or os.path.isfile("gomokuguy.go.txt"))  # Check for turn
 
-    if is_end:
-        return 1  # End of game
-    if our_turn:  # Place new enemy placement on board
-        f = open("move_file.txt", "r")
-        f_line = f.read()
+        if is_end:
+            return 1  # End of game
+        if our_turn:  # Place new enemy placement on board
+            f = open("move_file.txt", "r")
+            f_line = f.read()
+            f.close()
+            new_play = f_line.split(" ")
+            print(new_play)
+            if new_play[0] is not "":  # Case where it is our turn first
+                if new_play[0] == "gomokuguy":  # Case where other ai is still doing turn
+                    return -1  # Not our turn
+                cur_board[int(new_play[2]) - 1][self.parse_column(new_play[1])] = 2
+            return 0  # Success
+        return -1  # Not our turn
+
+    def check_first(self):
+        """
+        Checks if it our first move, find initial placement if it is
+        :return: array of position to place stone at, 0 if it is not our first move
+        """
+        is_empty = True
+        num_stones = 0
+        enemy_pos = [0, 0]
+        i, j = 0, 0
+
+        for row in cur_board:  # Check if board is empty or has only one stone
+            for element in row:
+                if element is not 0:
+                    is_empty = False
+                    num_stones += 1
+                    enemy_pos[0], enemy_pos[1] = j, i  # Used if only one stone on the board
+                j += 1
+            i += 1
+            j = 0
+
+        if is_empty:  # It is our turn first
+            return [3, 3]  # Return array of stone position
+        elif not is_empty and num_stones is 1:  # It is our first move, enemy had first turn
+            our_x, our_y = 0, 0
+
+            # For enemy placement in corners, place our stone diagonally across from theirs
+            print(enemy_pos)
+            if enemy_pos[X] <= 3 and enemy_pos[Y] <= 3:  # Enemy placement in UL corner
+                our_x, our_y = enemy_pos[X] + 1, enemy_pos[Y] + 1
+            elif enemy_pos[X] >= 11 and enemy_pos[Y] <= 3:  # Enemy placement in UR corner
+                our_x, our_y = enemy_pos[X] - 1, enemy_pos[Y] + 1
+            elif enemy_pos[X] <= 3 and enemy_pos[Y] >= 11:  # Enemy placement in LL corner
+                our_x, our_y = enemy_pos[X] + 1, enemy_pos[Y] - 1
+            elif enemy_pos[X] >= 11 and enemy_pos[Y] >= 11:  # Enemy placement in LR corner
+                our_x, our_y = enemy_pos[X] + 1, enemy_pos[Y] + 1
+
+            # For enemy placement near a side, place our stone horizontally/vertically across from theirs
+            elif enemy_pos[X] <= 3 and enemy_pos[Y] > 3 and enemy_pos[Y] < 11:  # Enemy placement on Left
+                our_x, our_y = enemy_pos[X] + 1, enemy_pos[Y]
+            elif enemy_pos[X] >= 11 and enemy_pos[Y] > 3 and enemy_pos[Y] < 11:  # Enemy placement on Right
+                our_x, our_y = enemy_pos[X] - 1, enemy_pos[Y]
+            elif enemy_pos[X] > 3 and enemy_pos[X] < 11 and enemy_pos[Y] <= 3:  # Enemy placement on Top
+                our_x, our_y = enemy_pos[X], enemy_pos[Y] + 1
+            elif enemy_pos[X] > 3 and enemy_pos[X] < 11 and enemy_pos[Y] >= 11:  # Enemy placement on Bottom
+                our_x, our_y = enemy_pos[X], enemy_pos[Y] - 1
+
+            else: # Otherwise, replace enemy stone
+                our_x, our_y = enemy_pos[X], enemy_pos[Y]
+            return [our_x, our_y]  # Return array of stone position
+        else:
+            return 0  # It is not the first turn
+
+        # TODO: This logic is very basic right now, maybe incorporate the heuristics in later
+
+    def write_turn(self, column, row):
+        """
+        Updates move file with our move
+        :param column: the column index of our move
+        :param row: the row index of our move
+        :return: 0 if executed successfully
+        """
+        cur_board[row][column] = 1  # Put our move on our board
+
+        # Write to move_file
+        f = open("move_file.txt", "w")
+        f.write("gomokuguy " + self.parse_column(column) + " " + str(row + 1))
         f.close()
-        new_play = f_line.split(" ")
-        print(new_play)
-        cur_board[int(new_play[2]) - 1][parse_column(new_play[1])] = 2
-        return 0  # Success
-    return -1  # Failure
+        return 0  # Executed successfully
 
-
-# Writes turn to move_file
-def write_turn(column, row):
-
-    cur_board[row][column] = 1  # Put our move on our board
-
-    # Write to move_file
-    f = open("move_file.txt", "w")
-    f.write("gomokuguy " + parse_column(column) + " " + str(row + 1))
-    f.close()
-
-
-# Prints the current playing board
-def print_board():
-    for row in cur_board:
-        print(row)
+    def print_board(self):
+        """
+        Prints out board array in readable format
+        :return: 0 if executed successfully
+        """
+        for row in cur_board:
+            print(row)
+        return 0  # Printed successfully
 
 
 # Runs the main program
 def main():
     is_end = False
     our_turn = False
+    move_x, move_y = 0, 0
+    io = FileIO()  # File input/output object
 
     while not is_end:
         print("Waiting for our turn...")
         while not our_turn:  # Wait for our turn
-            file_output = check_files()
+            file_output = io.check_files()
             if file_output == -1:
                 sleep(0.1)  # (in seconds)
             if file_output == 0:
@@ -303,9 +365,14 @@ def main():
                 is_end = True
 
         # Calculations for turn go here
+        if not is_end:
+            first_move = io.check_first()
+            if first_move is not 0:
+                move_x, move_y = first_move[X], first_move[Y]
 
-        write_turn(2, 3)
-        print_board()
+        if not is_end:
+            io.write_turn(move_x, move_y)
+            io.print_board()
 
         is_end = True  # Temp
 
