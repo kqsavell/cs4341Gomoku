@@ -377,5 +377,156 @@ def main():
         is_end = True  # Temp
 
 
+# Receives:
+    # Board of any Size
+    # Value(Side 1 or 2) to find the heuristic value of
+# Returns:
+    # Heuristic Value
+def get_heuristic(board, value):
+    heuristic_value = get_horizontal_heuristic(board,value) + get_vertical_heuristic(board, value) + \
+                      get_lr_diagonal_heuristic(board, value) + get_rl_diagonal_heuristic(board, value)
+    return heuristic_value;
+
+
+# Helper Function of get_heuristic
+def get_horizontal_heuristic(board, value):
+    heuristic_value = 0
+    for row in board:
+        for start in range(0, len(row)- 5):
+            friendly_count = 0
+            enemy_count = 0
+            for i in range(5):
+                if row[start + i] == value:
+                    friendly_count += 1
+                else:
+                    enemy_count += 1
+            if friendly_count > enemy_count:
+                heuristic_value += 1
+            else:
+                heuristic_value -= 1
+    return heuristic_value
+
+
+# Helper Function of get_heuristic
+def get_vertical_heuristic(board, value):
+    heuristic_value = 0
+    rows = len(board)
+    columns = len(board[0])
+    for x in range(columns - 5):
+        for y in range(rows):
+            friendly_count = 0
+            enemy_count = 0
+            for i in range(5):
+                if board[y + i][x] == value:
+                    friendly_count += 1
+                else:
+                    enemy_count += 1
+            if friendly_count > enemy_count:
+                heuristic_value += 1
+            else:
+                heuristic_value -= 1
+    return heuristic_value
+
+
+# Helper Function of get_heuristic
+def get_lr_diagonal_heuristic(board, value):
+    heuristic_value = 0
+    rows = len(board)
+    columns = len(board[0])
+
+    for y in range(columns - 4):
+        x = 0
+        diagonal_length = columns - y
+        for i in range(diagonal_length - 5):
+            friendly_count = 0
+            enemy_count = 0
+            for j in range(5):
+                if board[y + i + j][x + i + j] == value:
+                    friendly_count += 1
+                else:
+                    enemy_count += 1
+            if friendly_count > enemy_count:
+                heuristic_value += 1
+            else:
+                heuristic_value -= 1
+
+    for x in range(columns - 4 - 1):
+        x += 1
+        y = 0
+        diagonal_length = rows - x
+        for i in range(diagonal_length - 5):
+            friendly_count = 0
+            enemy_count = 0
+            for j in range(5):
+                if board[y + i + j][x + i + j] == value:
+                    friendly_count += 1
+                else:
+                    enemy_count += 1
+            if friendly_count > enemy_count:
+                heuristic_value += 1
+            else:
+                heuristic_value -= 1
+
+    return heuristic_value
+
+
+# Helper Function of get_heuristic
+def get_rl_diagonal_heuristic(board, value):
+    heuristic_value = 0
+    rows = len(board)
+    columns = len(board[0])
+
+    for y in range(columns - 4):
+        x = rows - 1
+        diagonal_length = columns - y
+        for i in range(diagonal_length - 5):
+            friendly_count = 0
+            enemy_count = 0
+            for j in range(5):
+                if board[y - i - j][x - i - j] == value:
+                    friendly_count += 1
+                else:
+                    enemy_count += 1
+            if friendly_count > enemy_count:
+                heuristic_value += 1
+            else:
+                heuristic_value -= 1
+
+    for x in range(columns - 4 - 1):
+        x -= 1
+        y = columns - 1
+        diagonal_length = rows - x
+        for i in range(diagonal_length - 5):
+            friendly_count = 0
+            enemy_count = 0
+            for j in range(5):
+                if board[y + i + j][x + i + j] == value:
+                    friendly_count += 1
+                else:
+                    enemy_count += 1
+            if friendly_count > enemy_count:
+                heuristic_value += 1
+            else:
+                heuristic_value -= 1
+
+    return heuristic_value
+
+
+# Receives:
+    # Board of any Size
+    # Board from Previous Move of Same Size
+# Only performs heuristic calculations on possibly affected areas
+# Returns:
+    # Heuristic Value
+def get_heuristic_optimized(board, value, previous_board):
+    #Not implemented
+
+    return 0
+
+#Turn
+# - Check if Turn can be Won (Net sum of 5 area is 4) (Friendly)
+# - Check if Oppenent can Win/Block (Net sum of 5 area is 4) (Oppenent)
+# - Mini-max of Heuristic
+
 main()
 
