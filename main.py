@@ -72,7 +72,9 @@ class DecisionTree:
                 self.board.append(copy.copy(row))
             data_list = self.list_moves(self.board)
             for element in data_list:
-                self.parse_subtree(element, self.root, 2, self.board)  # parse the subtree and hook it up to the root
+                pos_subboard = gen_subboard(element, cur_board)
+                heuristic = get_heuristic(pos_subboard, 1)
+                self.parse_subtree(element, heuristic, self.root, 2, self.board)  # parse the subtree and hook it up to the root
             return self.root
 
         def list_moves(self, board):
@@ -133,7 +135,7 @@ class DecisionTree:
 
             return move_list
 
-        def parse_subtree(self, pos, parent, cur_depth, board):
+        def parse_subtree(self, pos, value, parent, cur_depth, board):
             """
             Builds the subtree for a given parent node, recursive
             :param pos: the last move of the parent node
@@ -142,19 +144,20 @@ class DecisionTree:
             :param board: The current playing board configuration for the node
             :return: 0 once recursion on a branch has ended
             """
+            # Root = depth 1, so starting at depth = 2:
             # If backtracking, reset duplicate list
             if self.last_depth > cur_depth:
                 if cur_depth is 3:
                     self.lvthree_dup = []
             self.last_depth = cur_depth
 
-            # Root = depth 1, so starting at depth = 2:
+            # Copy passed-in board
             new_board = []
             for row in board:
                 new_board.append(copy.copy(row))
 
             # Create and hookup new node
-            new_node = GameNode(pos, 0, parent)
+            new_node = GameNode(pos, value, parent)
             parent.children.append(new_node)  # Append node to parent's children
 
             # Look at correct duplicate node list
@@ -170,11 +173,24 @@ class DecisionTree:
                     new_board[pos[0]][pos[1]] = 1
                 else:  # Otherwise, is opponent's future move
                     new_board[pos[0]][pos[1]] = 2
+
                 new_data_list = self.list_moves(new_board)
+                min_val, max_val = 999, -999
                 for element in new_data_list:
-                    print("Making child node of " + str(pos[0])+", " + str(pos[1]) +
-                          " at depth " + str(cur_depth) + ": " + str(element[0]) + ", " + str(element[1]))
-                    self.parse_subtree(element, new_node, cur_depth+1, new_board)
+                    pos_subboard = gen_subboard(pos, new_board)
+                    heuristic = get_heuristic(pos_subboard, 1)
+                    if heuristic > max_val:
+                        max_val = heuristic
+                        print("Making child node of " + str(pos[0])+", " + str(pos[1]) +
+                              " at depth " + str(cur_depth) + ": " + str(element[0]) + ", " + str(element[1]) +
+                              ": Heuristic Value = " + str(heuristic))
+                        self.parse_subtree(element, heuristic, new_node, cur_depth+1, new_board)
+                    elif heuristic < min_val:
+                        min_val = heuristic
+                        print("Making child node of " + str(pos[0]) + ", " + str(pos[1]) +
+                              " at depth " + str(cur_depth) + ": " + str(element[0]) + ", " + str(element[1]) +
+                              ": Heuristic Value = " + str(heuristic))
+                        self.parse_subtree(element, heuristic, new_node, cur_depth + 1, new_board)
             else:
                 return 0  # Reached lowest depth
 
@@ -599,6 +615,24 @@ def get_rl_diagonal_heuristic(board, value):
                 heuristic_value -= 1
 
     return heuristic_value
+
+
+# Returns an array of radius 5 around a given position. Position is in row-clumn format
+def gen_subboard(pos, board):
+    sub_board = []
+    i, j = pos[0] - 4, pos[1] - 4
+    while i <= pos[0] + 4:
+        if 0 <= i <= 14:
+            j = pos[1] - 4
+            new_row = []
+            while j <= 4:
+                if 0 <= j <= 14:
+                    new_row.append(board[i][j])
+                j += 1
+            sub_board.append(new_row)
+        i += 1
+
+    return sub_board
 
 
 # Receives:
