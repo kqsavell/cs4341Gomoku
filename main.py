@@ -1,6 +1,8 @@
 # Intro to AI Project 1: Gomoku
 # Kyle Savell, Richard Valente, Henry Wheeler-Mackta
+# AI Name: Gomokuguy
 
+import copy
 import os.path
 from time import sleep
 
@@ -25,6 +27,7 @@ cur_board = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 1
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]  # 15
 X = 0  # 0th element of x-y array
 Y = 1  # 1st element of x-y array
+MAX_DEPTH = 4  # Build and search depth of decision tree
 
 
 # Class for Game Node, holds a board state
@@ -32,7 +35,7 @@ class GameNode:
     def __init__(self, move, value, parent):
         """
         Game Nodes contain a potential board state
-        :param move: the move to make as a string(B5, A10, etc.)
+        :param move: the move to make as row-column coords (1, 2)
         :param value: the board state, same structure as the cur_board
         :param parent: the parent game node
         """
@@ -54,26 +57,126 @@ class GameNode:
 class DecisionTree:
         def __init__(self):
             self.root = None  # by default, no root
+            self.board = []  # Starting board is the current board
+            self.last_depth = 0  # Depth of last created node, used for backtracking
+            self.lvtwo_dup = []  # Holds unique nodes for depth 2
+            self.lvthree_dup = []  # Holds unique nodes for depth 3
 
-        def build_tree(self, data_list):
+        def build_tree(self):
             """
-            Builds the tree from a given data list
-            :param data_list: a list of all data, not sure what we want this to look like
-            :return:
+            Builds the tree from a given board state
+            :return: the root of the tree
             """
-            self.root = GameNode(data_list.pop(0))  # pop off the root game node, that's our root
+            self.root = GameNode(None, None, None)  # Starting node is empty
+            for row in cur_board:  # copy cur board configuration
+                self.board.append(copy.copy(row))
+            data_list = self.list_moves(self.board)
             for element in data_list:
-                self.parse_subtree(element, self.root)  # parse the subtree and hook it up to the root
+                self.parse_subtree(element, self.root, 2, self.board)  # parse the subtree and hook it up to the root
+            return self.root
 
-        def parse_subtree(self, data_list, parent):
+        def list_moves(self, board):
+            """
+            Gets list of possible first-order moves from current node
+            :return: data list of possible moves
+            """
+            stone_pos = []  # List of positions taken up by stones
+            move_list = []  # List of possible move positions given stone positions
+            i, j = 0, 0
+
+            # Generate list of stone positions
+            for row in board:
+                for element in row:
+                    if element is not 0:  # If stone is there, add position to list
+                        stone_pos.append([i, j])  # in row-column format
+                    j += 1
+                i += 1
+                j = 0
+
+            # Generate list of moves from current stone positions
+            for pos in stone_pos:
+                # Vertical positions
+                x, y = 0, -2
+                while y <= 2:  # B to T
+                    new_move = [pos[0] + y, pos[1]]
+                    if new_move not in move_list and new_move not in stone_pos:
+                        if 0 <= new_move[0] <= 14 and 0 <= new_move[1] <= 14:
+                            move_list.append(new_move)
+                    y += 1
+
+                # Horizontal positions
+                x, y = -2, 0
+                while x <= 2:  # L to R
+                    new_move = [pos[0], pos[1] + x]
+                    if new_move not in move_list and new_move not in stone_pos:
+                        if 0 <= new_move[0] <= 14 and 0 <= new_move[1] <= 14:
+                            move_list.append(new_move)
+                    x += 1
+
+                # Diagonal positions
+                x, y = -2, -2
+                while x <= 2:  # BL to UR
+                    new_move = [pos[0] + y, pos[1] + x]
+                    if new_move not in move_list and new_move not in stone_pos:
+                        if 0 <= new_move[0] <= 14 and 0 <= new_move[1] <= 14:
+                            move_list.append(new_move)
+                    y += 1
+                    x += 1
+                x, y = -2, 2
+                while x <= 2:  # UL to BR
+                    new_move = [pos[0] + y, pos[1] + x]
+                    if new_move not in move_list and new_move not in stone_pos:
+                        if 0 <= new_move[0] <= 14 and 0 <= new_move[1] <= 14:
+                            move_list.append(new_move)
+                    y -= 1
+                    x += 1
+
+            return move_list
+
+        def parse_subtree(self, pos, parent, cur_depth, board):
             """
             Builds the subtree for a given parent node, recursive
-            :param data_list: the list of all data, data = board states?
+            :param pos: the last move of the parent node
             :param parent: the root of this subtree
-            :return:
+            :param cur_depth: the tree depth this current iteration is on
+            :param board: The current playing board configuration for the node
+            :return: 0 once recursion on a branch has ended
             """
+            # If backtracking, reset duplicate list
+            if self.last_depth > cur_depth:
+                if cur_depth is 3:
+                    self.lvthree_dup = []
+            self.last_depth = cur_depth
 
-            # TODO: how do we want to store/build the tree?
+            # Root = depth 1, so starting at depth = 2:
+            new_board = []
+            for row in board:
+                new_board.append(copy.copy(row))
+
+            # Create and hookup new node
+            new_node = GameNode(pos, 0, parent)
+            parent.children.append(new_node)  # Append node to parent's children
+
+            # Look at correct duplicate node list
+            if cur_depth is 2:
+                dup_list = self.lvtwo_dup
+            else:
+                dup_list = self.lvthree_dup
+
+            # Recursively create children
+            if cur_depth <= MAX_DEPTH and [pos, cur_depth] not in dup_list:
+                dup_list.append([pos, cur_depth])  # Add entry to dup list
+                if cur_depth % 2 == 0:  # If even, is our future move
+                    new_board[pos[0]][pos[1]] = 1
+                else:  # Otherwise, is opponent's future move
+                    new_board[pos[0]][pos[1]] = 2
+                new_data_list = self.list_moves(new_board)
+                for element in new_data_list:
+                    print("Making child node of " + str(pos[0])+", " + str(pos[1]) +
+                          " at depth " + str(cur_depth) + ": " + str(element[0]) + ", " + str(element[1]))
+                    self.parse_subtree(element, new_node, cur_depth+1, new_board)
+            else:
+                return 0  # Reached lowest depth
 
 
 # Class for minimax
@@ -345,37 +448,11 @@ class FileIO:
             print(row)
         return 0  # Printed successfully
 
-
-# Runs the main program
-def main():
-    is_end = False
-    our_turn = False
-    move_x, move_y = 0, 0
-    io = FileIO()  # File input/output object
-
-    while not is_end:
-        print("Waiting for our turn...")
-        while not our_turn:  # Wait for our turn
-            file_output = io.check_files()
-            if file_output == -1:
-                sleep(0.1)  # (in seconds)
-            if file_output == 0:
-                our_turn = True
-            if file_output == 1:
-                is_end = True
-
-        # Calculations for turn go here
-        if not is_end:
-            first_move = io.check_first()
-            if first_move is not 0:
-                move_x, move_y = first_move[X], first_move[Y]
-
-        if not is_end:
-            io.write_turn(move_x, move_y)
-            io.print_board()
-
-        is_end = True  # Temp
-
+# Create 4 arrays
+# Turn
+# - Check if Turn can be Won (Net sum of 5 area is 4) (Friendly)
+# - Check if Oppenent can Win/Block (Net sum of 5 area is 4) (Oppenent)
+# - Mini-max of Heuristic
 
 # Receives:
     # Board of any Size
@@ -531,16 +608,43 @@ def get_rl_diagonal_heuristic(board, value):
 # Returns:
     # Heuristic Value
 def get_heuristic_optimized(board, value, previous_board):
-
-    #Not implemented
-
+    # Not implemented
     return 0
 
-#Create 4 arrays
-#Turn
-# - Check if Turn can be Won (Net sum of 5 area is 4) (Friendly)
-# - Check if Oppenent can Win/Block (Net sum of 5 area is 4) (Oppenent)
-# - Mini-max of Heuristic
+
+# Runs the main program
+def main():
+    is_end = False
+    our_turn = False
+    move_x, move_y = 0, 0
+    io = FileIO()  # File input/output object
+    dt = DecisionTree()  # Decision tree object
+
+    while not is_end:
+        print("Waiting for our turn...")
+        while not our_turn:  # Wait for our turn
+            file_output = io.check_files()
+            if file_output == -1:
+                sleep(0.1)  # (in seconds)
+            if file_output == 0:
+                our_turn = True
+            if file_output == 1:
+                is_end = True
+
+        # Calculations for turn go here
+        if not is_end:
+            first_move = io.check_first()
+            if first_move is not 0:
+                move_x, move_y = first_move[X], first_move[Y]
+            # If not the first move, build tree and use minimax algorithm
+            # else:
+            dt.build_tree()
+
+        if not is_end:
+            io.write_turn(move_x, move_y)
+            io.print_board()
+
+        is_end = True  # Temp
 
 main()
 
