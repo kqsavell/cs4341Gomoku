@@ -505,6 +505,8 @@ def get_horizontal_heuristic(board, value):
             for i in range(5):
                 if row[start + i] == value:
                     friendly_count += 1
+                elif row[start + i] == 0:
+                    friendly_count += 0
                 else:
                     enemy_count += 1
             if friendly_count > enemy_count:
@@ -526,6 +528,8 @@ def get_vertical_heuristic(board, value):
             for i in range(5):
                 if board[y + i][x] == value:
                     friendly_count += 1
+                elif board[y + i][x] == 0:
+                    friendly_count += 0
                 else:
                     enemy_count += 1
             if friendly_count > enemy_count:
@@ -550,6 +554,8 @@ def get_lr_diagonal_heuristic(board, value):
             for j in range(5):
                 if board[y + i + j][x + i + j] == value:
                     friendly_count += 1
+                elif board[y + i + j][x + i + j] == 0:
+                    friendly_count += 0
                 else:
                     enemy_count += 1
             if friendly_count > enemy_count:
@@ -567,6 +573,8 @@ def get_lr_diagonal_heuristic(board, value):
             for j in range(5):
                 if board[y + i + j][x + i + j] == value:
                     friendly_count += 1
+                elif board[y + i + j][x + i + j] == 0:
+                    friendly_count += 0
                 else:
                     enemy_count += 1
             if friendly_count > enemy_count:
@@ -592,6 +600,8 @@ def get_rl_diagonal_heuristic(board, value):
             for j in range(5):
                 if board[y - i - j][x - i - j] == value:
                     friendly_count += 1
+                elif board[y - i - j][x - i - j] == 0:
+                    friendly_count += 0
                 else:
                     enemy_count += 1
             if friendly_count > enemy_count:
@@ -607,8 +617,10 @@ def get_rl_diagonal_heuristic(board, value):
             friendly_count = 0
             enemy_count = 0
             for j in range(5):
-                if board[y + i + j][x + i + j] == value:
+                if board[y - i - j][x - i - j] == value:
                     friendly_count += 1
+                elif board[y - i - j][x - i - j] == 0:
+                    friendly_count += 0
                 else:
                     enemy_count += 1
             if friendly_count > enemy_count:
@@ -630,6 +642,7 @@ def get_heuristic_optimized(board, value, previous_board):
 
     return 0
 
+#Create 4 arrays
 #Turn
 # - Check if Turn can be Won (Net sum of 5 area is 4) (Friendly)
 # - Check if Oppenent can Win/Block (Net sum of 5 area is 4) (Oppenent)
