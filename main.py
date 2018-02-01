@@ -531,6 +531,7 @@ def get_rl_diagonal_heuristic(board, value):
 # Returns:
     # Heuristic Value
 def get_heuristic_optimized(board, value, previous_board):
+
     #Not implemented
 
     return 0
