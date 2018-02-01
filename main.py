@@ -96,8 +96,8 @@ class DecisionTree:
             # Generate list of moves from current stone positions
             for pos in stone_pos:
                 # Vertical positions
-                x, y = 0, -4
-                while y <= 4:  # B to T
+                x, y = 0, -2
+                while y <= 2:  # B to T
                     new_move = [pos[0] + y, pos[1]]
                     if new_move not in move_list and new_move not in stone_pos:
                         if 0 <= new_move[0] <= 14 and 0 <= new_move[1] <= 14:
@@ -105,8 +105,8 @@ class DecisionTree:
                     y += 1
 
                 # Horizontal positions
-                x, y = -4, 0
-                while x <= 4:  # L to R
+                x, y = -2, 0
+                while x <= 2:  # L to R
                     new_move = [pos[0], pos[1] + x]
                     if new_move not in move_list and new_move not in stone_pos:
                         if 0 <= new_move[0] <= 14 and 0 <= new_move[1] <= 14:
@@ -114,16 +114,16 @@ class DecisionTree:
                     x += 1
 
                 # Diagonal positions
-                x, y = -4, -4
-                while x <= 4:  # BL to UR
+                x, y = -2, -2
+                while x <= 2:  # BL to UR
                     new_move = [pos[0] + y, pos[1] + x]
                     if new_move not in move_list and new_move not in stone_pos:
                         if 0 <= new_move[0] <= 14 and 0 <= new_move[1] <= 14:
                             move_list.append(new_move)
                     y += 1
                     x += 1
-                x, y = -4, 4
-                while x <= 4:  # UL to BR
+                x, y = -2, 2
+                while x <= 2:  # UL to BR
                     new_move = [pos[0] + y, pos[1] + x]
                     if new_move not in move_list and new_move not in stone_pos:
                         if 0 <= new_move[0] <= 14 and 0 <= new_move[1] <= 14:
@@ -492,7 +492,7 @@ def main():
 def get_heuristic(board, value):
     heuristic_value = get_horizontal_heuristic(board,value) + get_vertical_heuristic(board, value) + \
                       get_lr_diagonal_heuristic(board, value) + get_rl_diagonal_heuristic(board, value)
-    return heuristic_value;
+    return heuristic_value
 
 
 # Helper Function of get_heuristic
@@ -626,7 +626,7 @@ def get_rl_diagonal_heuristic(board, value):
 # Returns:
     # Heuristic Value
 def get_heuristic_optimized(board, value, previous_board):
-    #Not implemented
+    # Not implemented
 
     return 0
 
