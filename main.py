@@ -448,41 +448,11 @@ class FileIO:
             print(row)
         return 0  # Printed successfully
 
-
-# Runs the main program
-def main():
-    is_end = False
-    our_turn = False
-    move_x, move_y = 0, 0
-    io = FileIO()  # File input/output object
-    dt = DecisionTree()  # Decision tree object
-
-    while not is_end:
-        print("Waiting for our turn...")
-        while not our_turn:  # Wait for our turn
-            file_output = io.check_files()
-            if file_output == -1:
-                sleep(0.1)  # (in seconds)
-            if file_output == 0:
-                our_turn = True
-            if file_output == 1:
-                is_end = True
-
-        # Calculations for turn go here
-        if not is_end:
-            first_move = io.check_first()
-            if first_move is not 0:
-                move_x, move_y = first_move[X], first_move[Y]
-            # If not the first move, build tree and use minimax algorithm
-            # else:
-            dt.build_tree()
-
-        if not is_end:
-            io.write_turn(move_x, move_y)
-            io.print_board()
-
-        is_end = True  # Temp
-
+# Create 4 arrays
+# Turn
+# - Check if Turn can be Won (Net sum of 5 area is 4) (Friendly)
+# - Check if Oppenent can Win/Block (Net sum of 5 area is 4) (Oppenent)
+# - Mini-max of Heuristic
 
 # Receives:
     # Board of any Size
@@ -642,11 +612,40 @@ def get_heuristic_optimized(board, value, previous_board):
 
     return 0
 
-#Create 4 arrays
-#Turn
-# - Check if Turn can be Won (Net sum of 5 area is 4) (Friendly)
-# - Check if Oppenent can Win/Block (Net sum of 5 area is 4) (Oppenent)
-# - Mini-max of Heuristic
+
+# Runs the main program
+def main():
+    is_end = False
+    our_turn = False
+    move_x, move_y = 0, 0
+    io = FileIO()  # File input/output object
+    dt = DecisionTree()  # Decision tree object
+
+    while not is_end:
+        print("Waiting for our turn...")
+        while not our_turn:  # Wait for our turn
+            file_output = io.check_files()
+            if file_output == -1:
+                sleep(0.1)  # (in seconds)
+            if file_output == 0:
+                our_turn = True
+            if file_output == 1:
+                is_end = True
+
+        # Calculations for turn go here
+        if not is_end:
+            first_move = io.check_first()
+            if first_move is not 0:
+                move_x, move_y = first_move[X], first_move[Y]
+            # If not the first move, build tree and use minimax algorithm
+            # else:
+            dt.build_tree()
+
+        if not is_end:
+            io.write_turn(move_x, move_y)
+            io.print_board()
+
+        is_end = True  # Temp
 
 main()
 
