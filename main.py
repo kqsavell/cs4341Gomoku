@@ -139,6 +139,7 @@ class DecisionTree:
             """
             Builds the subtree for a given parent node, recursive
             :param pos: the last move of the parent node
+            :param value: the heuristic value of the node
             :param parent: the root of this subtree
             :param cur_depth: the tree depth this current iteration is on
             :param board: The current playing board configuration for the node
@@ -205,7 +206,6 @@ class MiniMax:
         self.game_tree = game_tree
         self.root = game_tree.root  # the root of the tree
         self.currentNode = None  # we are not currently looking at any node
-        self.successors = []  # an empty array of the game nodes that succeed the current node
         return
 
     def get_successors(self, node):
@@ -229,7 +229,6 @@ class MiniMax:
     def getUtility(self, node):
         """
         Returns the value of the utility function for the given node
-        TODO: Make this not just return the value
         :param node: the node
         :return: the utility value
         """
@@ -237,30 +236,37 @@ class MiniMax:
 
     def run_minimax(self, node):
         """
-        Runs the minimax algorithm
+        Runs the minimax algorithm, assumes root is MAX
         :param node: the root node
         :return: the best move
         """
-        # set the current best val to the max value of the root node
-        best = self.max_value(node)
+        # set the current best val negative infinity (we can only go up)
+        best_value = -float('inf')
+        # set the beta value to infinity (we can only go down)
+        beta = float('inf')
 
         # which node has that max value?
         successors = self.get_sucessors(node)  # get a list of the successors to the current root
-        print("MiniMax: Utility Value of Root Node: " + str(best))
 
         # find the node that has this best move
         best_move = None
-        for element in successors:
-            if element.value == best:
-                best_move = element  # this element has the best value, therefore its the best one
-                break
+        for move in successors:
+            value = self.min_value(move, best_move, beta)
+            if value > best_value:  # if the value is greater than the best_value, update it
+                best_value = value
+                best_move = move
+
+        print "MiniMax:  Root Node heuristic value: " + str(best_value)
+        print "MiniMax:  Best Move is: " + str(best_move.move)
 
         return best_move
 
-    def max_value(self, node):
+    def max_value(self, node, alpha, beta):
         """
         Returns the max value from a given node
         :param node: the node to run this on
+        :param alpha: the passed alpha
+        :param beta: the passed beta
         :return: the max value
         """
         if self.isTerminal(node):  # if this is a terminal node...
@@ -269,13 +275,18 @@ class MiniMax:
         max_value = -float('inf')  # default the max value to negative infinity (we can only go up)
         the_successors = self.get_successors(node)  # get successors of this node
         for successor in the_successors:
-            max_value = max(max_value, self.min_value(successor))
+            max_value = max(max_value, self.min_value(successor, alpha, beta))
+            if max_value >= beta:  # if the max value is greater than the beta...
+                return max_value  # return the value, as further calculations will only ever be less
+            alpha = max(alpha, max_value)  # update the alpha for calculating the above max value
         return max_value
 
-    def min_value(self, node):
+    def min_value(self, node, alpha, beta):
         """
         Returns the min value from a given node
         :param node: the node to run this on
+        :param alpha: the passed alpha
+        :param beta: the passed beta
         :return: the min value
         """
         if self.isTerminal(node):  # if this is a terminal node...
@@ -284,7 +295,10 @@ class MiniMax:
         min_value = float('inf')  # default the min value to infinity (we can only go down
         the_successors = self.get_successors(node)  # get successors of this node
         for successor in the_successors:
-            min_value = min(min_value, self.max_value(successor))
+            min_value = min(min_value, self.max_value(successor, alpha, beta))
+            if min_value <= alpha:  # if the min value is less than the alpha...
+                return min_value  # return the value, as further calculations will only ever be higher
+            beta = min(beta, min_value)  # update the beta for calculating the above min value
         return min_value
 
 
@@ -654,6 +668,7 @@ def main():
     move_x, move_y = 0, 0
     io = FileIO()  # File input/output object
     dt = DecisionTree()  # Decision tree object
+    mm = MiniMax()  # MiniMax object
 
     while not is_end:
         print("Waiting for our turn...")
@@ -672,14 +687,16 @@ def main():
             if first_move is not 0:
                 move_x, move_y = first_move[X], first_move[Y]
             # If not the first move, build tree and use minimax algorithm
-            # else:
-            dt.build_tree()
+            else:
+                cur_root = dt.build_tree()
+                cur_move = mm.run_minimax(cur_root)  # Run minimax on the root returned by build_tree
+                move_x, move_y = cur_move.move[0], cur_move.move[1]  # set move_x and move_y
 
         if not is_end:
             io.write_turn(move_x, move_y)
             io.print_board()
 
-        is_end = True  # Temp
+        # is_end = True  # Temp
 
 main()
 
