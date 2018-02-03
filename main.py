@@ -524,12 +524,14 @@ def get_vertical_heuristic(board, value):
             friendly_count = 0
             enemy_count = 0
             for i in range(5):
-                if board[y + i][x] == value:
-                    friendly_count += 1
-                elif board[y + i][x] == 0:
-                    friendly_count += 0
-                else:
-                    enemy_count += 1
+                print(str(y + i)+", "+str(rows)+", "+str(columns))
+                if y + i < rows:
+                    if board[y + i][x] == value:
+                        friendly_count += 1
+                    elif board[y + i][x] == 0:
+                        friendly_count += 0
+                    else:
+                        enemy_count += 1
             if friendly_count > enemy_count:
                 heuristic_value += 1
             else:
@@ -637,13 +639,14 @@ def gen_subboard(pos, board):
         if 0 <= i <= 14:
             j = pos[1] - 4
             new_row = []
-            while j <= 4:
+            while j <= pos[1] + 4:
                 if 0 <= j <= 14:
                     new_row.append(board[i][j])
                 j += 1
             sub_board.append(new_row)
         i += 1
 
+    print(sub_board)
     return sub_board
 
 
