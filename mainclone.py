@@ -12,7 +12,7 @@ from time import sleep
 #             A  B  C  D  E  F  G  H  I  J  K  L  M  N  O
 cur_board = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 1
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 2
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 3
+             [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 3
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 4
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 5
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 6
@@ -87,6 +87,7 @@ class DecisionTree:
             i, j = 0, 0
 
             # Generate list of stone positions
+            print("test")
             for row in board:
                 for element in row:
                     if element is not 0:  # If stone is there, add position to list
@@ -94,6 +95,7 @@ class DecisionTree:
                     j += 1
                 i += 1
                 j = 0
+            print(stone_pos)
 
             # Generate list of moves from current stone positions
             for pos in stone_pos:
@@ -380,7 +382,7 @@ class FileIO:
         :return: -1 = Not our turn nor end of game, 0 = our turn and not end of game, 1 = end of game
         """
         is_end = (os.path.isfile("end_game") or os.path.isfile("end_game.txt"))  # Check for turn
-        our_turn = (os.path.isfile("gomokuguy.go") or os.path.isfile("gomokuguy.go.txt"))  # Check for turn
+        our_turn = (os.path.isfile("gomokugal.go") or os.path.isfile("gomokugal.go.txt"))  # Check for turn
 
         if is_end:
             return 1  # End of game
@@ -391,7 +393,7 @@ class FileIO:
             new_play = f_line.split(" ")
             print(new_play)
             if new_play[0] is not "":  # Case where it is our turn first
-                if new_play[0] == "gomokuguy":  # Case where other ai is still doing turn
+                if new_play[0] == "gomokugal":  # Case where other ai is still doing turn
                     return -1  # Not our turn
                 cur_board[int(new_play[2]) - 1][self.parse_column(new_play[1])] = 2
             return 0  # Success
@@ -462,7 +464,7 @@ class FileIO:
 
         # Write to move_file
         f = open("move_file.txt", "w")
-        f.write("gomokuguy " + self.parse_column(column) + " " + str(row + 1))
+        f.write("gomokugal " + self.parse_column(column) + " " + str(row + 1))
         f.close()
         return 0  # Executed successfully
 
