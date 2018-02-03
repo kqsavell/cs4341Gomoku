@@ -198,12 +198,10 @@ class DecisionTree:
 
 # Class for minimax
 class MiniMax:
-    def __init__(self, game_tree):
+    def __init__(self):
         """
         MiniMax takes a game tree (defined above)
-        :param game_tree: the game tree to run the algorithm on
         """
-        self.game_tree = game_tree
         self.root = game_tree.root  # the root of the tree
         self.currentNode = None  # we are not currently looking at any node
         return
