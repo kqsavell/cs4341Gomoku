@@ -256,8 +256,8 @@ class MiniMax:
                 best_value = value
                 best_move = move
 
-        print "MiniMax:  Root Node heuristic value: " + str(best_value)
-        print "MiniMax:  Best Move is: " + str(best_move.move)
+        print("MiniMax:  Root Node heuristic value: " + str(best_value))
+        print("MiniMax:  Best Move is: " + str(best_move.move))
 
         return best_move
 
