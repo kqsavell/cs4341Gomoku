@@ -660,7 +660,7 @@ def get_2d_heuristic(board_2d, value):
     heuristic_value = 0
     friendly_count = 0
     enemy_count = 0
-    for x in range(len(board_2d - 5)):
+    for x in range(len(board_2d) - 5):
         for i in range(5):
             if board_2d[x + i] == value:
                 friendly_count += 1
