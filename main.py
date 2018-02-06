@@ -507,14 +507,11 @@ def get_horizontal_heuristic(board, value):
                     friendly_count += 0
                 else:
                     enemy_count += 1
-            if friendly_count > enemy_count:
-                heuristic_value += 1
-            else:
-                heuristic_value -= 1
-            if friendly_count == 5 and enemy_count == 0:
-                heuristic_value += 10000
-            if friendly_count == 1 and enemy_count == 4:
-                heuristic_value += 500
+            heuristic_value += (enemy_count - friendly_count)*(enemy_count - friendly_count)
+            #if friendly_count > enemy_count:
+            #    heuristic_value += 1
+            #else:
+            #    heuristic_value -= 1
     return heuristic_value
 
 
@@ -535,14 +532,11 @@ def get_vertical_heuristic(board, value):
                         friendly_count += 0
                     else:
                         enemy_count += 1
-            if friendly_count > enemy_count:
-                heuristic_value += 1
-            else:
-                heuristic_value -= 1
-            if friendly_count == 5 and enemy_count == 0:
-                heuristic_value += 10000
-            if friendly_count == 1 and enemy_count == 4:
-                heuristic_value += 500
+            heuristic_value += (enemy_count - friendly_count) * (enemy_count - friendly_count)
+            #if friendly_count == 5 and enemy_count == 0:
+            #    heuristic_value += 10000
+            #if friendly_count == 1 and enemy_count == 4:
+            #    heuristic_value += 500
     return heuristic_value
 
 
@@ -566,14 +560,11 @@ def get_lr_diagonal_heuristic(board, value):
                         friendly_count += 0
                     else:
                         enemy_count += 1
-            if friendly_count > enemy_count:
-                heuristic_value += 1
-            else:
-                heuristic_value -= 1
-            if friendly_count == 5 and enemy_count == 0:
-                heuristic_value += 10000
-            if friendly_count == 1 and enemy_count == 4:
-                heuristic_value += 500
+            heuristic_value += (enemy_count - friendly_count) * (enemy_count - friendly_count)
+            #if friendly_count == 5 and enemy_count == 0:
+            #    heuristic_value += 10000
+            #if friendly_count == 1 and enemy_count == 4:
+            #    heuristic_value += 500
 
     for x in range(columns - 4 - 1):
         x += 1
@@ -591,14 +582,7 @@ def get_lr_diagonal_heuristic(board, value):
                         friendly_count += 0
                     else:
                         enemy_count += 1
-            if friendly_count > enemy_count:
-                heuristic_value += 1
-            else:
-                heuristic_value -= 1
-            if friendly_count == 5 and enemy_count == 0:
-                heuristic_value += 10000
-            if friendly_count == 1 and enemy_count == 4:
-                heuristic_value += 500
+            heuristic_value += (enemy_count - friendly_count) * (enemy_count - friendly_count)
 
     return heuristic_value
 
@@ -623,14 +607,7 @@ def get_rl_diagonal_heuristic(board, value):
                         friendly_count += 0
                     else:
                         enemy_count += 1
-            if friendly_count > enemy_count:
-                heuristic_value += 1
-            else:
-                heuristic_value -= 1
-            if friendly_count == 5 and enemy_count == 0:
-                heuristic_value += 10000
-            if friendly_count == 1 and enemy_count == 4:
-                heuristic_value += 500
+            heuristic_value += (enemy_count - friendly_count) * (enemy_count - friendly_count)
 
     for x in range(columns - 4 - 1):
         x -= 1
@@ -647,14 +624,7 @@ def get_rl_diagonal_heuristic(board, value):
                         friendly_count += 0
                     else:
                         enemy_count += 1
-            if friendly_count > enemy_count:
-                heuristic_value += 1
-            else:
-                heuristic_value -= 1
-            if friendly_count == 5 and enemy_count == 0:
-                heuristic_value += 10000
-            if friendly_count == 1 and enemy_count == 4:
-                heuristic_value += 500
+            heuristic_value += (enemy_count - friendly_count) * (enemy_count - friendly_count)
 
     return heuristic_value
 
@@ -692,14 +662,7 @@ def get_2d_heuristic(board_2d, value):
                 friendly_count += 0
             else:
                 enemy_count += 1
-        if friendly_count > enemy_count:
-            heuristic_value += 1
-        else:
-            heuristic_value -= 1
-        if friendly_count == 5 and enemy_count == 0:
-            heuristic_value += 10000
-        if friendly_count == 1 and enemy_count == 4:
-            heuristic_value += 500
+        heuristic_value += (enemy_count - friendly_count) * (enemy_count - friendly_count)
     return heuristic_value
 
 
