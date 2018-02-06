@@ -311,35 +311,35 @@ class FileIO:
         :param column: the column letter or number to map
         :return: the corresponding number or letter
         """
-        if column == "A":
+        if column == "A" or column == "a":
             return 0
-        elif column == "B":
+        elif column == "B" or column == "b":
             return 1
-        elif column == "C":
+        elif column == "C" or column == "c":
             return 2
-        elif column == "D":
+        elif column == "D" or column == "d":
             return 3
-        elif column == "E":
+        elif column == "E" or column == "e":
             return 4
-        elif column == "F":
+        elif column == "F" or column == "f":
             return 5
-        elif column == "G":
+        elif column == "G" or column == "g":
             return 6
-        elif column == "H":
+        elif column == "H" or column == "h":
             return 7
-        elif column == "I":
+        elif column == "I" or column == "i":
             return 8
-        elif column == "J":
+        elif column == "J" or column == "j":
             return 9
-        elif column == "K":
+        elif column == "K" or column == "k":
             return 10
-        elif column == "L":
+        elif column == "L" or column == "l":
             return 11
-        elif column == "M":
+        elif column == "M" or column == "m":
             return 12
-        elif column == "N":
+        elif column == "N" or column == "n":
             return 13
-        elif column == "O":
+        elif column == "O" or column == "o":
             return 14
         elif column == 0:
             return "A"
@@ -385,15 +385,15 @@ class FileIO:
         if is_end:
             return 1  # End of game
         if our_turn:  # Place new enemy placement on board
-            f = open("move_file.txt", "r")
+            f = open("move_file", "r")
             f_line = f.read()
             f.close()
             new_play = f_line.split(" ")
-            print(new_play)
             if new_play[0] is not "":  # Case where it is our turn first
                 if new_play[0] == "gomokuguy":  # Case where other ai is still doing turn
                     return -1  # Not our turn
-                cur_board[int(new_play[2]) - 1][self.parse_column(new_play[1])] = 2
+                clean_row = new_play[2].split("\n")
+                cur_board[int(clean_row[0]) - 1][self.parse_column(new_play[1])] = 2
             return 0  # Success
         return -1  # Not our turn
 
@@ -423,7 +423,6 @@ class FileIO:
             our_x, our_y = 0, 0
 
             # For enemy placement in corners, place our stone diagonally across from theirs
-            print(enemy_pos)
             if enemy_pos[X] <= 3 and enemy_pos[Y] <= 3:  # Enemy placement in UL corner
                 our_x, our_y = enemy_pos[X] + 1, enemy_pos[Y] + 1
             elif enemy_pos[X] >= 11 and enemy_pos[Y] <= 3:  # Enemy placement in UR corner
@@ -461,7 +460,7 @@ class FileIO:
         cur_board[row][column] = 1  # Put our move on our board
 
         # Write to move_file
-        f = open("move_file.txt", "w")
+        f = open("move_file", "w")
         f.write("gomokuguy " + self.parse_column(column) + " " + str(row + 1))
         f.close()
         return 0  # Executed successfully
@@ -796,6 +795,7 @@ def main():
                 our_turn = True
             if file_output == 1:
                 is_end = True
+                our_turn = True
 
         # Calculations for turn go here
         if not is_end:
