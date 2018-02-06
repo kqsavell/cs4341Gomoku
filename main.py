@@ -68,14 +68,151 @@ class DecisionTree:
             :return: the root of the tree
             """
             self.root = GameNode(None, None, None)  # Starting node is empty
-            for row in cur_board:  # copy cur board configuration
-                self.board.append(copy.copy(row))
-            data_list = self.list_moves(self.board)
-            for element in data_list:
-                pos_subboard = gen_subboard(element, cur_board)
-                heuristic = get_heuristic(pos_subboard, 1)
-                self.parse_subtree(element, heuristic, self.root, 2, self.board)  # parse the subtree and hook it up to the root
+            winning_move = self.find_win()
+            if winning_move != [-1, -1]:
+                print("Winning move found!\n")
+                new_node = GameNode(winning_move, 1000, self.root)
+                self.root.add_child_node(new_node)
+            else:
+                for row in cur_board:  # copy cur board configuration
+                    self.board.append(copy.copy(row))
+                data_list = self.list_moves(self.board)
+                for element in data_list:
+                    pos_subboard = gen_subboard(element, cur_board)
+                    heuristic = get_heuristic(pos_subboard, 1)
+                    self.parse_subtree(element, heuristic, self.root, 2,
+                                       self.board)  # parse the subtree and hook it up to the root
             return self.root
+
+        def find_win(self):
+            """
+            Tries to find an immediate winning or losing move
+            :return: position to place move if about to win or lose
+            """
+            winning_move = [-1, -1]
+            stone_pos = []  # List of positions taken up by stones
+            i, j = 0, 0
+
+            # List of winning moves (4 in a row)
+            winning_set = [[0, 1, 1, 1, 1], [1, 0, 1, 1, 1], [1, 1, 0, 1, 1], [1, 1, 1, 0, 1], [1, 1, 1, 1, 0],
+                           [0, 2, 2, 2, 2], [2, 0, 2, 2, 2], [2, 2, 0, 2, 2], [2, 2, 2, 0, 2], [2, 2, 2, 2, 0]]
+
+            # Generate list of stone positions
+            for row in cur_board:
+                for element in row:
+                    if element is not 0:  # If stone is there, add position to list
+                        stone_pos.append([i, j])  # in row-column format
+                    j += 1
+                i += 1
+                j = 0
+
+            for stone in stone_pos:
+                # Find horizontal win
+                if stone[1] >= 4:
+                    temp_array = [cur_board[stone[0]][stone[1]],
+                                  cur_board[stone[0]][stone[1] - 1],
+                                  cur_board[stone[0]][stone[1] - 2],
+                                  cur_board[stone[0]][stone[1] - 3],
+                                  cur_board[stone[0]][stone[1] - 4]]
+                    if temp_array in winning_set:
+                        offset = self.winning_offset(temp_array)
+                        if 1 in temp_array:
+                            return [stone[0], stone[1] - offset]
+                        else:
+                            winning_move = [stone[0], stone[1] - offset]
+                if stone[1] <= 10:
+                    temp_array = [cur_board[stone[0]][stone[1]],
+                                  cur_board[stone[0]][stone[1] + 1],
+                                  cur_board[stone[0]][stone[1] + 2],
+                                  cur_board[stone[0]][stone[1] + 3],
+                                  cur_board[stone[0]][stone[1] + 4]]
+                    if temp_array in winning_set:
+                        offset = self.winning_offset(temp_array)
+                        return [stone[0], stone[1] + offset]
+
+                # Find vertical win
+                if stone[0] >= 4:
+                    temp_array = [cur_board[stone[0]][stone[1]],
+                                  cur_board[stone[0] - 1][stone[1]],
+                                  cur_board[stone[0] - 2][stone[1]],
+                                  cur_board[stone[0] - 3][stone[1]],
+                                  cur_board[stone[0] - 4][stone[1]]]
+                    if temp_array in winning_set:
+                        offset = self.winning_offset(temp_array)
+                        return [stone[0] - offset, stone[1]]
+                if stone[0] <= 10:
+                    temp_array = [cur_board[stone[0]][stone[1]],
+                                  cur_board[stone[0] + 1][stone[1]],
+                                  cur_board[stone[0] + 2][stone[1]],
+                                  cur_board[stone[0] + 3][stone[1]],
+                                  cur_board[stone[0] + 4][stone[1]]]
+                    if temp_array in winning_set:
+                        offset = self.winning_offset(temp_array)
+                        if 1 in temp_array:
+                            return [stone[0] + offset, stone[1]]
+                        else:
+                            winning_move = [stone[0] + offset, stone[1]]
+
+                # Find UL to BR diagonal win
+                if stone[0] >= 4 and stone[1] >= 4:
+                    temp_array = [cur_board[stone[0]][stone[1]],
+                                  cur_board[stone[0] - 1][stone[1] - 1],
+                                  cur_board[stone[0] - 2][stone[1] - 2],
+                                  cur_board[stone[0] - 3][stone[1] - 3],
+                                  cur_board[stone[0] - 4][stone[1] - 4]]
+                    if temp_array in winning_set:
+                        offset = self.winning_offset(temp_array)
+                        if 1 in temp_array:
+                            return [stone[0] - offset, stone[1] - offset]
+                        else:
+                            winning_move = [stone[0] - offset, stone[1] - offset]
+                if stone[0] <= 10 and stone[1] <= 10:
+                    temp_array = [cur_board[stone[0]][stone[1]],
+                                  cur_board[stone[0] + 1][stone[1] + 1],
+                                  cur_board[stone[0] + 2][stone[1] + 2],
+                                  cur_board[stone[0] + 3][stone[1] + 3],
+                                  cur_board[stone[0] + 4][stone[1] + 4]]
+                    if temp_array in winning_set:
+                        offset = self.winning_offset(temp_array)
+                        if 1 in temp_array:
+                            return [stone[0] + offset, stone[1] + offset]
+                        else:
+                            winning_move = [stone[0] + offset, stone[1] + offset]
+
+                # Find UR to BL diagonal win
+                if stone[1] <= 10 and stone[0] >= 4:
+                    temp_array = [cur_board[stone[0]][stone[1]],
+                                  cur_board[stone[0] - 1][stone[1] + 1],
+                                  cur_board[stone[0] - 2][stone[1] + 2],
+                                  cur_board[stone[0] - 3][stone[1] + 3],
+                                  cur_board[stone[0] - 4][stone[1] + 4]]
+                    if temp_array in winning_set:
+                        offset = self.winning_offset(temp_array)
+                        if 1 in temp_array:
+                            return [stone[0] - offset, stone[1] + offset]
+                        else:
+                            winning_move = [stone[0] - offset, stone[1] + offset]
+                if stone[1] >= 4 and stone[0] <= 10:
+                    temp_array = [cur_board[stone[0]][stone[1]],
+                                  cur_board[stone[0] + 1][stone[1] - 1],
+                                  cur_board[stone[0] + 2][stone[1] - 2],
+                                  cur_board[stone[0] + 3][stone[1] - 3],
+                                  cur_board[stone[0] + 4][stone[1] - 4]]
+                    if temp_array in winning_set:
+                        offset = self.winning_offset(temp_array)
+                        if 1 in temp_array:
+                            return [stone[0] + offset, stone[1] - offset]
+                        else:
+                            winning_move = [stone[0] + offset, stone[1] - offset]
+
+            return winning_move
+
+        def winning_offset(self, array):
+            i = 0
+            for pos in array:
+                if pos == 0:
+                    return i
+                i += 1
 
         def list_moves(self, board):
             """
@@ -792,6 +929,7 @@ def get_heuristic_optimized(board, value, previous_board):
 def main():
     is_end = False
     our_turn = False
+    first_turn = True
     move_x, move_y = 0, 0
     io = FileIO()  # File input/output object
     dt = DecisionTree()  # Decision tree object
@@ -811,9 +949,10 @@ def main():
 
         # Calculations for turn go here
         if not is_end:
-            first_move = io.check_first()
-            if first_move is not 0:
-                move_x, move_y = first_move[X], first_move[Y]
+            first_piece = io.check_first()
+            if first_piece is not 0 and first_turn:
+                move_x, move_y = first_piece[X], first_piece[Y]
+                first_turn = False
             # If not the first move, build tree and use minimax algorithm
             else:
                 cur_root = dt.build_tree()
