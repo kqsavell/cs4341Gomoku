@@ -178,8 +178,7 @@ class DecisionTree:
                 new_data_list = self.list_moves(new_board)
                 min_val, max_val = 999, -999
                 for element in new_data_list:
-                    pos_subboard = gen_subboard(pos, new_board)
-                    heuristic = get_heuristic(pos_subboard, 1)
+                    heuristic = get_heuristic_optimized(new_board, 1, board)
                     if heuristic > max_val:
                         max_val = heuristic
                         print("Making child node of " + str(pos[0])+", " + str(pos[1]) +
@@ -660,7 +659,7 @@ def get_2d_heuristic(board_2d, value):
     heuristic_value = 0
     friendly_count = 0
     enemy_count = 0
-    for x in range(len(board_2d - 5)):
+    for x in range(len(board_2d) - 5):
         if board_2d[x] == value:
             friendly_count += 1
         elif board_2d[x] == 0:

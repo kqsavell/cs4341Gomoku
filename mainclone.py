@@ -12,7 +12,7 @@ from time import sleep
 #             A  B  C  D  E  F  G  H  I  J  K  L  M  N  O
 cur_board = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 1
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 2
-             [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 3
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 3
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 4
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 5
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 6
@@ -87,7 +87,6 @@ class DecisionTree:
             i, j = 0, 0
 
             # Generate list of stone positions
-            print("test")
             for row in board:
                 for element in row:
                     if element is not 0:  # If stone is there, add position to list
@@ -95,7 +94,6 @@ class DecisionTree:
                     j += 1
                 i += 1
                 j = 0
-            print(stone_pos)
 
             # Generate list of moves from current stone positions
             for pos in stone_pos:
@@ -180,8 +178,7 @@ class DecisionTree:
                 new_data_list = self.list_moves(new_board)
                 min_val, max_val = 999, -999
                 for element in new_data_list:
-                    pos_subboard = gen_subboard(pos, new_board)
-                    heuristic = get_heuristic(pos_subboard, 1)
+                    heuristic = get_heuristic_optimized(new_board, 1, board)
                     if heuristic > max_val:
                         max_val = heuristic
                         print("Making child node of " + str(pos[0])+", " + str(pos[1]) +
@@ -477,6 +474,7 @@ class FileIO:
             print(row)
         return 0  # Printed successfully
 
+
 # Create 4 arrays
 # Turn
 # - Check if Turn can be Won (Net sum of 5 area is 4) (Friendly)
@@ -656,15 +654,125 @@ def gen_subboard(pos, board):
 
 
 # Receives:
+    # 2D Array of Values
+def get_2d_heuristic(board_2d, value):
+    heuristic_value = 0
+    friendly_count = 0
+    enemy_count = 0
+    for x in range(len(board_2d) - 5):
+        if board_2d[x] == value:
+            friendly_count += 1
+        elif board_2d[x] == 0:
+            friendly_count += 0
+        else:
+            enemy_count += 1
+    if friendly_count > enemy_count:
+        heuristic_value += 1
+    else:
+        heuristic_value -= 1
+    return heuristic_value
+
+
+# Receives:
     # Board of any Size
     # Board from Previous Move of Same Size
 # Only performs heuristic calculations on possibly affected areas
 # Returns:
     # Heuristic Value
 def get_heuristic_optimized(board, value, previous_board):
-    # Not implemented
-    # Test
-    return 0
+    heuristic_value = 0
+    move_x = 0
+    move_y = 0
+    rows = len(board)
+    columns = len(board[0])
+    for x in range(columns):
+        for y in range(rows):
+            if not (board[y][x] == previous_board[y][x]):
+                move_x = x
+                move_y = y
+
+    bound_left = max(0, move_x - 5)
+    bound_right = min(columns, move_x + 5)
+    bound_top = max(0, move_y - 5)
+    bound_bottom = min(rows, move_y - 5)
+    horizontal = []
+    vertical = []
+
+    # Heuristic value calculations for HORIZONTAL and VERTICAL
+    for x in range(bound_left, bound_right):
+        horizontal.append(board[move_y][ x])
+    for y in range(bound_top, bound_bottom):
+        vertical.append(board[move_x][ y])
+    heuristic_value += get_2d_heuristic(horizontal, value)
+    heuristic_value += get_2d_heuristic(vertical, value)
+
+    # until it hits +5 or max
+
+    bound_lr_diagonal_top_x = 0
+    bound_lr_diagonal_top_y = 0
+    bound_lr_diagonal_bot_x = 0
+    bound_lr_diagonal_bot_y = 0
+    bound_rl_diagonal_top_x = 0
+    bound_rl_diagonal_top_y = 0
+    bound_rl_diagonal_bot_x = 0
+    bound_rl_diagonal_bot_y = 0
+
+
+    # if board is at 10 out of 15 places index 9 then the right bound will be 14
+    # if its 14 then
+    # Heuristic value calculations for LR_DIAGONAL and RL_DIAGONAL
+    # Find leftmost edge
+    x_finder = move_x
+    y_finder = move_y
+    while x_finder >= 0 and x_finder >= bound_left and y_finder >= 0 and y_finder >= bound_top:
+        x_finder -= 1
+        y_finder -= 1
+    bound_lr_diagonal_top_x = x_finder
+    bound_lr_diagonal_top_y = y_finder
+    x_finder = move_x
+    y_finder = move_y
+    while x_finder <= columns and x_finder <= bound_right and y_finder <= rows and y_finder <= bound_bottom:
+        x_finder += 1
+        y_finder += 1
+    bound_lr_diagonal_bot_x = x_finder
+    bound_lr_diagonal_bot_y = y_finder
+    x_finder = move_x
+    y_finder = move_y
+    while x_finder  >= 0 and x_finder >= bound_left and y_finder <= rows and y_finder <= bound_bottom:
+        x_finder -= 1
+        y_finder += 1
+    bound_rl_diagonal_bot_x = x_finder
+    bound_rl_diagonal_bot_y = y_finder
+    x_finder = move_x
+    y_finder = move_y
+    while x_finder <= columns and x_finder <= bound_right and y_finder >= 0 and y_finder >= bound_top:
+        x_finder += 1
+        y_finder -= 1
+    bound_lr_diagonal_top_x = x_finder
+    bound_lr_diagonal_top_y = y_finder
+
+    lr_diagonal = []
+    rl_diagonal = []
+
+    #Create 2D-Boards
+    for v in range(bound_lr_diagonal_bot_x - bound_lr_diagonal_top_x):
+        x = bound_lr_diagonal_top_x + v
+        y = bound_lr_diagonal_top_y + v
+        lr_diagonal.append(board[y][x])
+    for v in range(bound_rl_diagonal_top_x - bound_rl_diagonal_bot_x):
+        x = bound_rl_diagonal_top_x - v
+        y = bound_rl_diagonal_top_y + v
+        rl_diagonal.append(board[y][x])
+
+    heuristic_value += get_2d_heuristic(lr_diagonal, value)
+    heuristic_value += get_2d_heuristic(rl_diagonal, value)
+
+
+    # create 4 areas that are atleast 5 in size. could be on the edge left or right
+    # get the place of the new move
+    # check around the new move for relavant heuristic
+
+    return heuristic_value
 
 
 # Runs the main program
