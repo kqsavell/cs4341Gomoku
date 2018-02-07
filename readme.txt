@@ -39,8 +39,8 @@ will then use those heuristic scores for its values. The minimax algorithm calls
 
 
 EVALUATION FUNCTION
-At any given state, the evaluation function runs the primary heuristic and returns the heuristic score. The decision tree generation calls for the 
-heuristic at [LINE NUMBER]. 
+At any given state, the evaluation function runs the optimized heuristic and returns an estimated heuristic score. The decision tree generation calls for the 
+heuristic at [LINE NUMBER]. Which calls the function get_heuristic_optimized at [LINE NUMBER]
 
 
 RESULTS
