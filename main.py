@@ -641,7 +641,7 @@ class FileIO:
             elif enemy_pos[X] <= 3 and enemy_pos[Y] >= 11:  # Enemy placement in LL corner
                 our_x, our_y = enemy_pos[X] + 1, enemy_pos[Y] - 1
             elif enemy_pos[X] >= 11 and enemy_pos[Y] >= 11:  # Enemy placement in LR corner
-                our_x, our_y = enemy_pos[X] + 1, enemy_pos[Y] + 1
+                our_x, our_y = enemy_pos[X] - 1, enemy_pos[Y] - 1
 
             # For enemy placement near a side, place our stone horizontally/vertically across from theirs
             elif enemy_pos[X] <= 3 and enemy_pos[Y] > 3 and enemy_pos[Y] < 11:  # Enemy placement on Left
