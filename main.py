@@ -598,7 +598,7 @@ class FileIO:
             if yloc == 1:  # top side
                 y = random.randint(0, 1)
             else:  # bottom side
-                y = random.randint(0, 14)
+                y = random.randint(15, 16)
             return [x, y]  # Return array of stone position
         elif not is_empty and num_stones is 1:  # It is our first move, enemy had first turn
             our_x, our_y = 0, 0
