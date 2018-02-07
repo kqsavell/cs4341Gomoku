@@ -95,7 +95,8 @@ class DecisionTree:
 
             # List of winning moves (4 in a row)
             winning_set = [[0, 1, 1, 1, 1], [1, 0, 1, 1, 1], [1, 1, 0, 1, 1], [1, 1, 1, 0, 1], [1, 1, 1, 1, 0],
-                           [0, 2, 2, 2, 2], [2, 0, 2, 2, 2], [2, 2, 0, 2, 2], [2, 2, 2, 0, 2], [2, 2, 2, 2, 0]]
+                           [0, 2, 2, 2, 2], [2, 0, 2, 2, 2], [2, 2, 0, 2, 2], [2, 2, 2, 0, 2], [2, 2, 2, 2, 0],
+                           [0, 1, 1, 1, 0], [0, 2, 2, 2, 0]]
 
             # Generate list of stone positions
             for row in cur_board:
@@ -109,101 +110,125 @@ class DecisionTree:
             for stone in stone_pos:
                 # Find horizontal win
                 if stone[1] >= 4:
-                    temp_array = [cur_board[stone[0]][stone[1]],
-                                  cur_board[stone[0]][stone[1] - 1],
-                                  cur_board[stone[0]][stone[1] - 2],
-                                  cur_board[stone[0]][stone[1] - 3],
-                                  cur_board[stone[0]][stone[1] - 4]]
-                    if temp_array in winning_set:
-                        offset = self.winning_offset(temp_array)
-                        if 1 in temp_array:
-                            return [stone[0], stone[1] - offset]
-                        else:
-                            winning_move = [stone[0], stone[1] - offset]
+                    i = 1
+                    while i >= 0:
+                        temp_array = [cur_board[stone[0]][stone[1] + i],
+                                      cur_board[stone[0]][stone[1] - 1 + i],
+                                      cur_board[stone[0]][stone[1] - 2 + i],
+                                      cur_board[stone[0]][stone[1] - 3 + i],
+                                      cur_board[stone[0]][stone[1] - 4 + i]]
+                        if temp_array in winning_set:
+                            offset = self.winning_offset(temp_array)
+                            if 1 in temp_array:
+                                return [stone[0], stone[1] - offset]
+                            else:
+                                winning_move = [stone[0], stone[1] - offset + i]
+                        i -= 1
                 if stone[1] <= 10:
-                    temp_array = [cur_board[stone[0]][stone[1]],
-                                  cur_board[stone[0]][stone[1] + 1],
-                                  cur_board[stone[0]][stone[1] + 2],
-                                  cur_board[stone[0]][stone[1] + 3],
-                                  cur_board[stone[0]][stone[1] + 4]]
-                    if temp_array in winning_set:
-                        offset = self.winning_offset(temp_array)
-                        return [stone[0], stone[1] + offset]
+                    i = 1
+                    while i >= 0:
+                        temp_array = [cur_board[stone[0]][stone[1] - i],
+                                      cur_board[stone[0]][stone[1] + 1 - i],
+                                      cur_board[stone[0]][stone[1] + 2 - i],
+                                      cur_board[stone[0]][stone[1] + 3 - i],
+                                      cur_board[stone[0]][stone[1] + 4 - i]]
+                        if temp_array in winning_set:
+                            offset = self.winning_offset(temp_array)
+                            return [stone[0], stone[1] + offset - i]
+                        i -= 1
 
                 # Find vertical win
                 if stone[0] >= 4:
-                    temp_array = [cur_board[stone[0]][stone[1]],
-                                  cur_board[stone[0] - 1][stone[1]],
-                                  cur_board[stone[0] - 2][stone[1]],
-                                  cur_board[stone[0] - 3][stone[1]],
-                                  cur_board[stone[0] - 4][stone[1]]]
-                    if temp_array in winning_set:
-                        offset = self.winning_offset(temp_array)
-                        return [stone[0] - offset, stone[1]]
+                    i = 1
+                    while i >= 0:
+                        temp_array = [cur_board[stone[0] + i][stone[1]],
+                                      cur_board[stone[0] - 1 + i][stone[1]],
+                                      cur_board[stone[0] - 2 + i][stone[1]],
+                                      cur_board[stone[0] - 3 + i][stone[1]],
+                                      cur_board[stone[0] - 4 + i][stone[1]]]
+                        if temp_array in winning_set:
+                            offset = self.winning_offset(temp_array)
+                            return [stone[0] - offset + i, stone[1]]
+                        i -= 1
                 if stone[0] <= 10:
-                    temp_array = [cur_board[stone[0]][stone[1]],
-                                  cur_board[stone[0] + 1][stone[1]],
-                                  cur_board[stone[0] + 2][stone[1]],
-                                  cur_board[stone[0] + 3][stone[1]],
-                                  cur_board[stone[0] + 4][stone[1]]]
-                    if temp_array in winning_set:
-                        offset = self.winning_offset(temp_array)
-                        if 1 in temp_array:
-                            return [stone[0] + offset, stone[1]]
-                        else:
-                            winning_move = [stone[0] + offset, stone[1]]
+                    i = 1
+                    while i >= 0:
+                        temp_array = [cur_board[stone[0] - i][stone[1]],
+                                      cur_board[stone[0] + 1 - i][stone[1]],
+                                      cur_board[stone[0] + 2 - i][stone[1]],
+                                      cur_board[stone[0] + 3 - i][stone[1]],
+                                      cur_board[stone[0] + 4 - i][stone[1]]]
+                        if temp_array in winning_set:
+                            offset = self.winning_offset(temp_array)
+                            if 1 in temp_array:
+                                return [stone[0] + offset, stone[1]]
+                            else:
+                                winning_move = [stone[0] + offset - i, stone[1]]
+                        i -= 1
 
                 # Find UL to BR diagonal win
                 if stone[0] >= 4 and stone[1] >= 4:
-                    temp_array = [cur_board[stone[0]][stone[1]],
-                                  cur_board[stone[0] - 1][stone[1] - 1],
-                                  cur_board[stone[0] - 2][stone[1] - 2],
-                                  cur_board[stone[0] - 3][stone[1] - 3],
-                                  cur_board[stone[0] - 4][stone[1] - 4]]
-                    if temp_array in winning_set:
-                        offset = self.winning_offset(temp_array)
-                        if 1 in temp_array:
-                            return [stone[0] - offset, stone[1] - offset]
-                        else:
-                            winning_move = [stone[0] - offset, stone[1] - offset]
+                    i = 1
+                    while i >= 0:
+                        temp_array = [cur_board[stone[0] + i][stone[1] + i],
+                                      cur_board[stone[0] - 1 + i][stone[1] - 1 + i],
+                                      cur_board[stone[0] - 2 + i][stone[1] - 2 + i],
+                                      cur_board[stone[0] - 3 + i][stone[1] - 3 + i],
+                                      cur_board[stone[0] - 4 + i][stone[1] - 4 + i]]
+                        if temp_array in winning_set:
+                            offset = self.winning_offset(temp_array)
+                            if 1 in temp_array:
+                                return [stone[0] - offset, stone[1] - offset]
+                            else:
+                                winning_move = [stone[0] - offset + i, stone[1] - offset + i]
+                        i -= 1
                 if stone[0] <= 10 and stone[1] <= 10:
-                    temp_array = [cur_board[stone[0]][stone[1]],
-                                  cur_board[stone[0] + 1][stone[1] + 1],
-                                  cur_board[stone[0] + 2][stone[1] + 2],
-                                  cur_board[stone[0] + 3][stone[1] + 3],
-                                  cur_board[stone[0] + 4][stone[1] + 4]]
-                    if temp_array in winning_set:
-                        offset = self.winning_offset(temp_array)
-                        if 1 in temp_array:
-                            return [stone[0] + offset, stone[1] + offset]
-                        else:
-                            winning_move = [stone[0] + offset, stone[1] + offset]
+                    i = 1
+                    while i >= 0:
+                        temp_array = [cur_board[stone[0] - i][stone[1] - i],
+                                      cur_board[stone[0] + 1 - i][stone[1] + 1 - i],
+                                      cur_board[stone[0] + 2 - i][stone[1] + 2 - i],
+                                      cur_board[stone[0] + 3 - i][stone[1] + 3 - i],
+                                      cur_board[stone[0] + 4 - i][stone[1] + 4 - i]]
+                        if temp_array in winning_set:
+                            offset = self.winning_offset(temp_array)
+                            if 1 in temp_array:
+                                return [stone[0] + offset, stone[1] + offset]
+                            else:
+                                winning_move = [stone[0] + offset - i, stone[1] + offset - i]
+                        i -= 1
 
                 # Find UR to BL diagonal win
                 if stone[1] <= 10 and stone[0] >= 4:
-                    temp_array = [cur_board[stone[0]][stone[1]],
-                                  cur_board[stone[0] - 1][stone[1] + 1],
-                                  cur_board[stone[0] - 2][stone[1] + 2],
-                                  cur_board[stone[0] - 3][stone[1] + 3],
-                                  cur_board[stone[0] - 4][stone[1] + 4]]
-                    if temp_array in winning_set:
-                        offset = self.winning_offset(temp_array)
-                        if 1 in temp_array:
-                            return [stone[0] - offset, stone[1] + offset]
-                        else:
-                            winning_move = [stone[0] - offset, stone[1] + offset]
+                    i = 1
+                    while i >= 0:
+                        temp_array = [cur_board[stone[0] + i][stone[1] - i],
+                                      cur_board[stone[0] - 1 + i][stone[1] + 1 - i],
+                                      cur_board[stone[0] - 2 + i][stone[1] + 2 - i],
+                                      cur_board[stone[0] - 3 + i][stone[1] + 3 - i],
+                                      cur_board[stone[0] - 4 + i][stone[1] + 4 - i]]
+                        if temp_array in winning_set:
+                            offset = self.winning_offset(temp_array)
+                            if 1 in temp_array:
+                                return [stone[0] - offset, stone[1] + offset]
+                            else:
+                                winning_move = [stone[0] - offset + i, stone[1] + offset - i]
+                        i -= 1
                 if stone[1] >= 4 and stone[0] <= 10:
-                    temp_array = [cur_board[stone[0]][stone[1]],
-                                  cur_board[stone[0] + 1][stone[1] - 1],
-                                  cur_board[stone[0] + 2][stone[1] - 2],
-                                  cur_board[stone[0] + 3][stone[1] - 3],
-                                  cur_board[stone[0] + 4][stone[1] - 4]]
-                    if temp_array in winning_set:
-                        offset = self.winning_offset(temp_array)
-                        if 1 in temp_array:
-                            return [stone[0] + offset, stone[1] - offset]
-                        else:
-                            winning_move = [stone[0] + offset, stone[1] - offset]
+                    i = 1
+                    while i >= 0:
+                        temp_array = [cur_board[stone[0] - i][stone[1] + i],
+                                      cur_board[stone[0] + 1 - i][stone[1] - 1 + i],
+                                      cur_board[stone[0] + 2 - i][stone[1] - 2 + i],
+                                      cur_board[stone[0] + 3 - i][stone[1] - 3 + i],
+                                      cur_board[stone[0] + 4 - i][stone[1] - 4 + i]]
+                        if temp_array in winning_set:
+                            offset = self.winning_offset(temp_array)
+                            if 1 in temp_array:
+                                return [stone[0] + offset, stone[1] - offset]
+                            else:
+                                winning_move = [stone[0] + offset - i, stone[1] - offset + i]
+                        i -= 1
 
             return winning_move
 
@@ -283,6 +308,10 @@ class DecisionTree:
             :return: 0 once recursion on a branch has ended
             """
             # Root = depth 1, so starting at depth = 2:
+            # If heuristic is close to 0, stop expanding
+            if abs(value) <= 1:
+                return 0
+
             # If backtracking, reset duplicate list
             if self.last_depth > cur_depth:
                 if cur_depth is 3:
@@ -315,8 +344,11 @@ class DecisionTree:
                 new_data_list = self.list_moves(new_board)
                 min_val, max_val = 999, -999
                 for element in new_data_list:
-                    pos_subboard = gen_subboard(pos, new_board)
-                    heuristic = get_heuristic(pos_subboard, 1)
+                    if cur_depth == MAX_DEPTH:
+                        pos_subboard = gen_subboard(pos, new_board)
+                        heuristic = get_heuristic(pos_subboard, 1)
+                    else:
+                        heuristic = get_heuristic_optimized(new_board, 1, board)
                     if heuristic > max_val:
                         max_val = heuristic
                         print("Making child node of " + str(pos[0])+", " + str(pos[1]) +
