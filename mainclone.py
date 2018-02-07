@@ -4,6 +4,7 @@
 
 import copy
 import os.path
+import random
 from time import sleep
 
 # 0 = Blank
@@ -587,7 +588,18 @@ class FileIO:
             j = 0
 
         if is_empty:  # It is our turn first
-            return [3, 3]  # Return array of stone position
+            xloc = random.randint(0, 1)  # is the bead gonna be on the left or right side of board?
+            yloc = random.randint(0, 1)  # is the bead gonna be on the top or bottom side of the board
+            x, y = 0, 0
+            if xloc == 1:  # left side
+                x = random.randint(0, 1)  # generate a random
+            else:  # right side
+                x = random.randint(15, 16)
+            if yloc == 1:  # top side
+                y = random.randint(0, 1)
+            else:  # bottom side
+                y = random.randint(0, 14)
+            return [x, y]  # Return array of stone position
         elif not is_empty and num_stones is 1:  # It is our first move, enemy had first turn
             our_x, our_y = 0, 0
 
