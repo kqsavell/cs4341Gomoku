@@ -28,7 +28,7 @@ cur_board = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 1
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]  # 15
 X = 0  # 0th element of x-y array
 Y = 1  # 1st element of x-y array
-MAX_DEPTH = 4  # Build and search depth of decision tree
+MAX_DEPTH = 6  # Build and search depth of decision tree
 
 
 # Class for Game Node, holds a board state
