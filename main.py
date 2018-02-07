@@ -28,7 +28,7 @@ cur_board = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 1
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]  # 15
 X = 0  # 0th element of x-y array
 Y = 1  # 1st element of x-y array
-MAX_DEPTH = 4  # Build and search depth of decision tree
+MAX_DEPTH = 6  # Build and search depth of decision tree
 
 
 # Class for Game Node, holds a board state
@@ -624,11 +624,11 @@ class FileIO:
             if xloc == 1:  # left side
                 x = random.randint(0, 1)  # generate a random
             else:  # right side
-                x = random.randint(15, 16)
+                x = random.randint(13, 14)
             if yloc == 1:  # top side
                 y = random.randint(0, 1)
             else:  # bottom side
-                y = random.randint(15, 16)
+                y = random.randint(13, 14)
             return [x, y]  # Return array of stone position
         elif not is_empty and num_stones is 1:  # It is our first move, enemy had first turn
             our_x, our_y = 0, 0
